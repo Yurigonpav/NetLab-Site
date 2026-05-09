@@ -2,7 +2,7 @@
 
 Este repositório contém o código-fonte da landing page oficial do **NetLab Educacional**, uma plataforma desktop voltada para o ensino de redes de computadores e segurança da informação.
 
-## 🚀 Sobre o Projeto
+## Sobre o Projeto
 
 O site foi desenvolvido para apresentar as funcionalidades do software NetLab, fornecer instruções de instalação e disponibilizar o link direto para download das versões mais recentes.
 
@@ -12,13 +12,13 @@ O site foi desenvolvido para apresentar as funcionalidades do software NetLab, f
 - **Instruções Claras**: Passo a passo de instalação do software e seus pré-requisitos (como o Npcap).
 - **Acessibilidade**: Implementação de links de salto (skip links) e semântica HTML5.
 
-## 🛠️ Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 - **HTML5**: Estrutura semântica.
 - **CSS3 (Vanilla)**: Estilização personalizada, variáveis CSS e animações.
 - **JavaScript**: Lógica simples para rolagem suave e interações básicas.
 
-## 📂 Como Visualizar Localmente
+## Como Visualizar Localmente
 
 1. Clone este repositório:
    ```bash
@@ -26,7 +26,7 @@ O site foi desenvolvido para apresentar as funcionalidades do software NetLab, f
    ```
 2. Abra o arquivo `index.html` em qualquer navegador moderno.
 
-## 🔗 Links Relacionados
+## Links Relacionados
 
 - **Repositório Principal (Software)**: [NetLab-Educacional](https://github.com/Yurigonpav/NetLab-Educacional)
 - **Desenvolvido por**: [Yuri Gonçalves Pavão](https://github.com/Yurigonpav)
