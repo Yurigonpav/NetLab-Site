@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetLab Educacional — Plataforma para ensino de redes e segurança</title>
+    <meta name="description"
+        content="Ferramenta desktop gratuita para captura e análise de tráfego de rede, topologia interativa e laboratório de segurança web. Desenvolvido como Trabalho de Conclusão de Curso no IFFar — Campus Uruguaiana.">
+    <meta name="author" content="Yuri Gonçalves Pavão">
+    <meta name="theme-color" content="#07111c">
+    <meta property="og:title" content="NetLab Educacional">
+    <meta property="og:description"
+        content="Plataforma desktop para ensino de redes de computadores, análise de tráfego e segurança web.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yurigonpav.github.io/netlab-educacional/">
+    <meta property="og:image" content="https://yurigonpav.github.io/netlab-educacional/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #07111c;
+            --bg-alt: #0c1b2b;
+            --panel: rgba(10, 20, 33, 0.88);
+            --panel-strong: rgba(15, 31, 48, 0.96);
+            --line: rgba(112, 178, 255, 0.16);
+            --line-strong: rgba(112, 178, 255, 0.32);
+            --text: #edf4ff;
+            --muted: #9cb5d1;
+            --accent: #5ec6ff;
+            --accent-strong: #1492df;
+            --accent-soft: rgba(94, 198, 255, 0.14);
+            --success: #42d392;
+            --danger: #ff8d8d;
+            --warning: #ffd36a;
+            --shadow: 0 24px 60px rgba(0, 0, 0, 0.34);
+            --shadow-lg: 0 32px 80px rgba(0, 0, 0, 0.48);
+            --radius-lg: 26px;
+            --radius-md: 22px;
+            --radius-sm: 16px;
+            --radius-pill: 999px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 100px;
+        }
+
+        body {
+            font-family: "Segoe UI", "Trebuchet MS", system-ui, -apple-system, sans-serif;
+            background:
+                radial-gradient(circle at 15% 10%, rgba(94, 198, 255, 0.18), transparent 38%),
+                radial-gradient(circle at 85% 20%, rgba(66, 211, 146, 0.12), transparent 32%),
+                radial-gradient(circle at 50% 70%, rgba(20, 146, 223, 0.08), transparent 44%),
+                linear-gradient(180deg, #06101a 0%, #091522 45%, #050d15 100%);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background:
+                linear-gradient(120deg, rgba(94, 198, 255, 0.04), transparent 44%),
+                linear-gradient(300deg, rgba(66, 211, 146, 0.03), transparent 38%);
+        }
+
+        .page-shell {
+            position: relative;
+            z-index: 1;
+            width: min(1200px, 94%);
+            margin: 0 auto;
+            padding: 0 8px;
+        }
+
+        /* ── Skip link ──────────────────────────── */
+        .skip-link {
+            position: fixed;
+            top: -72px;
+            left: 24px;
+            z-index: 100;
+            padding: 10px 18px;
+            border-radius: var(--radius-pill);
+            background: var(--accent);
+            color: #07111c;
+            font-weight: 700;
+            font-size: 14px;
+            text-decoration: none;
+            box-shadow: var(--shadow);
+            transition: top 0.25s ease;
+        }
+
+        .skip-link:focus {
+            top: 20px;
+            outline: 3px solid rgba(94, 198, 255, 0.72);
+            outline-offset: 3px;
+        }
+
+        /* ── Header / Nav ──────────────────────── */
+        .topbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 18px;
+            justify-content: space-between;
+            padding: 16px 24px;
+            margin-top: 20px;
+            margin-bottom: 28px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-md);
+            background: rgba(8, 18, 29, 0.88);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 16px;
+            z-index: 50;
+        }
+
+        .brand-block {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .brand-logo {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(94, 198, 255, 0.35), rgba(20, 146, 223, 0.18));
+            border: 1px solid rgba(94, 198, 255, 0.28);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--accent);
+            flex-shrink: 0;
+            box-shadow: 0 8px 24px rgba(94, 198, 255, 0.10);
+        }
+
+        .brand-copy {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .brand-kicker {
+            font-size: 10px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-weight: 600;
+        }
+
+        .brand-copy strong {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.2;
+        }
+
+        .nav-strip {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .nav-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 16px;
+            border-radius: var(--radius-pill);
+            border: 1px solid transparent;
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            transition: 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .nav-link:hover {
+            color: var(--text);
+            border-color: var(--line-strong);
+            background: rgba(255, 255, 255, 0.08);
+            text-decoration: none;
+        }
+
+        .nav-link.nav-cta {
+            background: linear-gradient(135deg, #76d6ff 0%, #3eb7ff 100%);
+            color: #07111c;
+            font-weight: 700;
+            border-color: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 6px 20px rgba(62, 183, 255, 0.22);
+        }
+
+        .nav-link.nav-cta:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 28px rgba(62, 183, 255, 0.32);
+            color: #07111c;
+        }
+
+        /* ── Hero ──────────────────────────────── */
+        .hero {
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+            gap: 24px;
+            padding: 36px 32px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--line);
+            background: linear-gradient(180deg, rgba(16, 34, 53, 0.94), rgba(8, 18, 29, 0.94));
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 28px;
+            align-items: center;
+        }
+
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            color: var(--accent);
+            font-size: 11px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .hero-eyebrow::before {
+            content: "";
+            width: 28px;
+            height: 1px;
+            background: currentColor;
+            opacity: 0.85;
+        }
+
+        .hero h1 {
+            color: var(--text);
+            font-size: clamp(32px, 4.5vw, 48px);
+            line-height: 1.08;
+            margin-bottom: 16px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        .hero h1 .highlight {
+            background: linear-gradient(135deg, #76d6ff 0%, #3eb7ff 70%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-lead {
+            color: var(--muted);
+            font-size: 17px;
+            line-height: 1.65;
+            max-width: 58ch;
+            margin-bottom: 24px;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 50px;
+            padding: 12px 26px;
+            border-radius: var(--radius-pill);
+            border: 1px solid transparent;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.22s ease;
+            color: #07111c;
+            background: linear-gradient(135deg, #76d6ff 0%, #3eb7ff 100%);
+            border-color: rgba(255, 255, 255, 0.10);
+            box-shadow: 0 10px 28px rgba(62, 183, 255, 0.26);
+            white-space: nowrap;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 36px rgba(62, 183, 255, 0.34);
+            text-decoration: none;
+            color: #07111c;
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: 0 6px 18px rgba(62, 183, 255, 0.20);
+        }
+
+        .btn-ghost {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 50px;
+            padding: 12px 26px;
+            border-radius: var(--radius-pill);
+            border: 1px solid var(--line);
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.22s ease;
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.04);
+            white-space: nowrap;
+        }
+
+        .btn-ghost:hover {
+            background: rgba(255, 255, 255, 0.09);
+            border-color: var(--line-strong);
+            text-decoration: none;
+            color: var(--text);
+        }
+
+        .hero-panel {
+            padding: 28px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--line);
+            background: var(--panel);
+            box-shadow: var(--shadow);
+        }
+
+        .hero-panel h3 {
+            color: var(--muted);
+            font-size: 12px;
+            letter-spacing: 0.10em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .stat {
+            padding: 14px 10px;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.03);
+            text-align: center;
+        }
+
+        .stat strong {
+            display: block;
+            color: var(--text);
+            font-size: 20px;
+            margin-bottom: 4px;
+            font-weight: 700;
+        }
+
+        .stat span {
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.3;
+        }
+
+        .version-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: var(--radius-pill);
+            border: 1px solid rgba(94, 198, 255, 0.22);
+            background: rgba(94, 198, 255, 0.10);
+            color: var(--accent);
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .os-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: var(--radius-pill);
+            border: 1px solid rgba(66, 211, 146, 0.22);
+            background: rgba(66, 211, 146, 0.08);
+            color: var(--success);
+            font-size: 13px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        /* ── Seções ────────────────────────────── */
+        .section {
+            margin-bottom: 28px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .section-header .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            color: var(--accent);
+            font-size: 11px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .section-header .eyebrow::before,
+        .section-header .eyebrow::after {
+            content: "";
+            width: 32px;
+            height: 1px;
+            background: currentColor;
+            opacity: 0.70;
+        }
+
+        .section-header h2 {
+            color: var(--text);
+            font-size: clamp(26px, 3.5vw, 36px);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .section-header p {
+            color: var(--muted);
+            font-size: 16px;
+            max-width: 60ch;
+            margin: 0 auto;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            padding: 26px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--line);
+            background: var(--panel);
+            box-shadow: var(--shadow);
+            transition: border-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .card:hover {
+            border-color: var(--line-strong);
+            transform: translateY(-2px);
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: rgba(94, 198, 255, 0.10);
+            border: 1px solid rgba(94, 198, 255, 0.16);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 16px;
+            flex-shrink: 0;
+        }
+
+        .card h3 {
+            color: var(--text);
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .card p {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* ── Requisitos ────────────────────────── */
+        .requirements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .req-card {
+            padding: 24px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--line);
+            background: var(--panel);
+            box-shadow: var(--shadow);
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .req-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .req-card h4 {
+            color: var(--text);
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .req-card p {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* ── Instalação ────────────────────────── */
+        .steps-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            counter-reset: step;
+        }
+
+        .steps-list li {
+            counter-increment: step;
+            padding: 22px 24px;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.02);
+            display: flex;
+            gap: 18px;
+            align-items: flex-start;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(94, 198, 255, 0.25), rgba(20, 146, 223, 0.12));
+            border: 1px solid rgba(94, 198, 255, 0.28);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--accent);
+            flex-shrink: 0;
+        }
+
+        .step-content h4 {
+            color: var(--text);
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .step-content p {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.55;
+        }
+
+        .step-content code {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(0, 0, 0, 0.32);
+            color: #b7ffcf;
+            font-family: "Cascadia Code", "Fira Code", Consolas, monospace;
+            font-size: 13px;
+            margin-top: 6px;
+            word-break: break-all;
+        }
+
+        /* ── Aviso ético ───────────────────────── */
+        .aviso-box {
+            padding: 24px 28px;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(255, 141, 141, 0.24);
+            background: rgba(255, 141, 141, 0.08);
+            color: #ffb1b1;
+            font-size: 14px;
+            line-height: 1.6;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .aviso-box .aviso-icon {
+            font-size: 28px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .aviso-box strong {
+            color: var(--danger);
+        }
+
+        /* ── Footer ────────────────────────────── */
+        .site-footer {
+            margin-top: 40px;
+            padding: 32px 0 24px;
+            border-top: 1px solid var(--line);
+            text-align: center;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .site-footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .site-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            justify-content: center;
+            margin-bottom: 14px;
+        }
+
+        .footer-links a {
+            color: var(--muted);
+            font-size: 13px;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--text);
+        }
+
+        /* ── Floating download button (mobile) ──── */
+        .floating-download {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 90;
+            padding: 14px 22px;
+            border-radius: var(--radius-pill);
+            background: linear-gradient(135deg, #76d6ff 0%, #3eb7ff 100%);
+            color: #07111c;
+            font-weight: 700;
+            font-size: 15px;
+            text-decoration: none;
+            box-shadow: 0 14px 36px rgba(62, 183, 255, 0.38);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .floating-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 18px 42px rgba(62, 183, 255, 0.46);
+            text-decoration: none;
+            color: #07111c;
+        }
+
+        /* ── Responsivo ────────────────────────── */
+        @media (max-width: 920px) {
+            .hero {
+                grid-template-columns: 1fr;
+                padding: 24px 20px;
+            }
+
+            .hero-panel {
+                order: -1;
+            }
+
+            .topbar {
+                padding: 14px 16px;
+                gap: 10px;
+            }
+
+            .nav-strip {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .brand-copy strong {
+                font-size: 16px;
+            }
+
+            .stat-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 0;
+            }
+
+            .page-shell {
+                width: 96%;
+            }
+
+            .hero h1 {
+                font-size: 26px;
+            }
+
+            .hero-lead {
+                font-size: 15px;
+            }
+
+            .btn-primary,
+            .btn-ghost {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .stat-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .cards-grid,
+            .requirements-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .floating-download {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .os-badge {
+                margin-left: 0;
+                margin-top: 8px;
+            }
+
+            .version-badge {
+                display: flex;
+                margin-top: 8px;
+            }
+        }
+
+        /* ── Animações sutis ───────────────────── */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .delay-1 {
+            animation-delay: 0.1s;
+            opacity: 0;
+        }
+
+        .delay-2 {
+            animation-delay: 0.2s;
+            opacity: 0;
+        }
+
+        .delay-3 {
+            animation-delay: 0.3s;
+            opacity: 0;
+        }
+
+        /* ── Foco visível ──────────────────────── */
+        a:focus-visible,
+        button:focus-visible {
+            outline: 3px solid rgba(94, 198, 255, 0.72);
+            outline-offset: 4px;
+            border-radius: 4px;
+        }
+
+        /* ── Tabela de protocolos (compacta) ────── */
+        .protocol-table-wrap {
+            overflow-x: auto;
+            margin-top: 8px;
+        }
+
+        .protocol-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .protocol-table th {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--muted);
+            padding: 10px 14px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 11px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .protocol-table td {
+            padding: 10px 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text);
+        }
+
+        .protocol-table tr:hover td {
+            background: rgba(255, 255, 255, 0.03);
+        }
+    </style>
+</head>
+
+<body>
+    <a class="skip-link" href="#conteudo-principal">Pular para conteúdo</a>
+
+    <div class="page-shell">
+        <!-- ═══════════ HEADER ═══════════ -->
+        <header class="topbar" role="banner">
+            <a href="#" class="brand-block" aria-label="NetLab Educacional — Ir ao topo">
+                <div class="brand-logo" aria-hidden="true">NL</div>
+                <div class="brand-copy">
+                    <span class="brand-kicker">IFFar — Campus Uruguaiana</span>
+                    <strong>NetLab Educacional</strong>
+                </div>
+            </a>
+            <nav class="nav-strip" aria-label="Navegação principal">
+                <a href="#funcionalidades" class="nav-link">Funcionalidades</a>
+                <a href="#requisitos" class="nav-link">Requisitos</a>
+                <a href="#instalacao" class="nav-link">Instalação</a>
+                <a href="#download" class="nav-link nav-cta">⬇ Baixar</a>
+            </nav>
+        </header>
+
+        <!-- ═══════════ CONTEÚDO PRINCIPAL ═══════════ -->
+        <main id="conteudo-principal" tabindex="-1">
+
+            <!-- ── HERO ──────────────────────────── -->
+            <section class="hero animate-in" aria-labelledby="hero-titulo">
+                <div>
+                    <span class="hero-eyebrow">Trabalho de Conclusão de Curso</span>
+                    <h1 id="hero-titulo">
+                        Plataforma desktop para
+                        <span class="highlight">ensino de redes</span>
+                        e segurança web
+                    </h1>
+                    <p class="hero-lead">
+                        Capture tráfego em tempo real, explore a topologia da sua rede,
+                        entenda protocolos com explicações didáticas e experimente
+                        um laboratório de vulnerabilidades web — tudo em ambiente
+                        controlado, offline e seguro.
+                    </p>
+                    <div class="hero-actions">
+                        <a href="#download" class="btn-primary">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <polyline points="7 10 12 15 17 10" />
+                                <line x1="12" y1="15" x2="12" y2="3" />
+                            </svg>
+                            Baixar instalador
+                        </a>
+                        <a href="https://github.com/Yurigonpav/netlab-educacional" class="btn-ghost" target="_blank"
+                            rel="noopener noreferrer">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                <path
+                                    d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.605-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z" />
+                            </svg>
+                            Ver no GitHub
+                        </a>
+                    </div>
+                </div>
+                <aside class="hero-panel" aria-label="Resumo do projeto">
+                    <h3>Resumo do projeto</h3>
+                    <div class="stat-grid">
+                        <div class="stat">
+                            <strong>4</strong>
+                            <span>abas principais</span>
+                        </div>
+                        <div class="stat">
+                            <strong>14+</strong>
+                            <span>protocolos analisados</span>
+                        </div>
+                        <div class="stat">
+                            <strong>12</strong>
+                            <span>rotas vulneráveis</span>
+                        </div>
+                    </div>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+                        <span class="version-badge">🔬 v1.0</span>
+                        <span class="os-badge">🪟 Windows 10/11</span>
+                    </div>
+                    <p style="color:var(--muted);font-size:12px;margin-top:14px;line-height:1.5;">
+                        Desenvolvido como Trabalho de Conclusão de Curso Técnico em Informática
+                        no <strong style="color:var(--text);">IFFar — Campus Uruguaiana</strong>.
+                    </p>
+                </aside>
+            </section>
+
+            <!-- ── FUNCIONALIDADES ────────────────── -->
+            <section class="section animate-in delay-1" id="funcionalidades" aria-labelledby="sec-func">
+                <div class="section-header">
+                    <span class="eyebrow">O que o NetLab oferece</span>
+                    <h2 id="sec-func">Funcionalidades principais</h2>
+                    <p>Ferramentas integradas para captura, visualização e interpretação de tráfego de rede com foco
+                        educacional.</p>
+                </div>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-icon" aria-hidden="true">📡</div>
+                        <h3>Captura em tempo real</h3>
+                        <p>Capture pacotes IPv4, ARP e ICMP com Scapy e Npcap em thread dedicada, sem travar a
+                            interface. Selecione a interface de rede diretamente pelo painel.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon" aria-hidden="true">🗺️</div>
+                        <h3>Topologia interativa</h3>
+                        <p>Visualize dispositivos da rede local, conexões e sub-redes em um grafo com zoom, arraste e
+                            painel de detalhes. Apelide hosts e identifique fabricantes por MAC.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon" aria-hidden="true">📊</div>
+                        <h3>Métricas de tráfego</h3>
+                        <p>Acompanhe KB/s em tempo real com gráfico suavizado, ranking de protocolos e dispositivos por
+                            volume. Pause e navegue pelo histórico sem interromper a captura.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon" aria-hidden="true">🧠</div>
+                        <h3>Modo Análise pedagógico</h3>
+                        <p>Cada evento de rede ganha explicação em linguagem acessível, evidências técnicas extraídas do
+                            pacote e contexto prático. Classificação por severidade e protocolo.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon" aria-hidden="true">🔓</div>
+                        <h3>Laboratório de segurança</h3>
+                        <p>Servidor HTTP vulnerável integrado com SQL Injection, XSS, IDOR, CSRF e mais. Banco em
+                            memória, dados descartados ao parar. Ideal para demonstrações em sala.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon" aria-hidden="true">🩺</div>
+                        <h3>Diagnóstico integrado</h3>
+                        <p>Verifique privilégios, versão do Npcap, saúde da interface, latência do gateway e resolução
+                            DNS. Exporte relatório completo em texto.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── PROTOCOLOS ─────────────────────── -->
+            <section class="section animate-in delay-1" aria-labelledby="sec-prot">
+                <div class="card" style="padding:28px;">
+                    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+                        <span class="hero-eyebrow" style="margin-bottom:0;">Análise profunda</span>
+                    </div>
+                    <h2 id="sec-prot" style="margin-bottom:8px;">Protocolos analisados</h2>
+                    <p style="color:var(--muted);margin-bottom:16px;">O NetLab classifica e explica cada protocolo
+                        encontrado na rede.</p>
+                    <div class="protocol-table-wrap">
+                        <table class="protocol-table">
+                            <thead>
+                                <tr>
+                                    <th>Protocolo</th>
+                                    <th>Tratamento</th>
+                                    <th>Exemplo de evidência</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>HTTP</strong></td>
+                                    <td>DPI completa</td>
+                                    <td>Método, host, headers, formulários, credenciais em texto claro</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>HTTPS</strong></td>
+                                    <td>Metadados e contexto</td>
+                                    <td>IPs, portas, indicação de TLS</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>DNS</strong></td>
+                                    <td>Consultas</td>
+                                    <td>Domínio consultado e servidor DNS</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>ARP</strong></td>
+                                    <td>Descoberta local</td>
+                                    <td>IP/MAC de origem, operação request/reply</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>ICMP</strong></td>
+                                    <td>Conectividade</td>
+                                    <td>Origem, destino, TTL</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>DHCP</strong></td>
+                                    <td>Configuração</td>
+                                    <td>Portas, tipo DHCP, transaction ID</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>TCP</strong></td>
+                                    <td>Conexões</td>
+                                    <td>SYN, FIN, RST — handshake e encerramento</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>SSH / FTP / SMB / RDP</strong></td>
+                                    <td>Serviços remotos</td>
+                                    <td>IPs, portas, risco operacional</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── REQUISITOS ─────────────────────── -->
+            <section class="section animate-in delay-2" id="requisitos" aria-labelledby="sec-req">
+                <div class="section-header">
+                    <span class="eyebrow">Pré-requisitos</span>
+                    <h2 id="sec-req">O que você precisa</h2>
+                    <p>Requisitos de sistema e software para executar o NetLab.</p>
+                </div>
+                <div class="requirements-grid">
+                    <div class="req-card">
+                        <div class="req-icon" aria-hidden="true">🪟</div>
+                        <div>
+                            <h4>Windows 10 ou 11</h4>
+                            <p>Sistema operacional principal. O fluxo foi projetado e testado em Windows. Alguns
+                                componentes também funcionam em Linux.</p>
+                        </div>
+                    </div>
+                    <div class="req-card">
+                        <div class="req-icon" aria-hidden="true">🐍</div>
+                        <div>
+                            <h4>Python 3.11+</h4>
+                            <p>Recomendado usar a versão mais recente do Python 3. O instalador empacota as dependências
+                                necessárias.</p>
+                        </div>
+                    </div>
+                    <div class="req-card">
+                        <div class="req-icon" aria-hidden="true">🔌</div>
+                        <div>
+                            <h4>Npcap</h4>
+                            <p>Driver de captura de pacotes para Windows. Instale com o modo <em>"WinPcap API-compatible
+                                    Mode"</em> ativado.</p>
+                        </div>
+                    </div>
+                    <div class="req-card">
+                        <div class="req-icon" aria-hidden="true">⚡</div>
+                        <div>
+                            <h4>Privilégios de administrador</h4>
+                            <p>A captura de pacotes requer execução como administrador. O NetLab detecta e avisa se a
+                                permissão estiver ausente.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── INSTALAÇÃO ─────────────────────── -->
+            <section class="section animate-in delay-2" id="instalacao" aria-labelledby="sec-inst">
+                <div class="section-header">
+                    <span class="eyebrow">Como instalar</span>
+                    <h2 id="sec-inst">Passo a passo rápido</h2>
+                    <p>Da instalação do Python até a primeira captura.</p>
+                </div>
+                <div class="card" style="padding:28px;">
+                    <ol class="steps-list">
+                        <li>
+                            <span class="step-number" aria-hidden="true">1</span>
+                            <div class="step-content">
+                                <h4>Instale o Python e o Npcap</h4>
+                                <p>Baixe o Python em <a href="https://python.org" target="_blank"
+                                        rel="noopener">python.org</a> e o Npcap em <a href="https://npcap.com"
+                                        target="_blank" rel="noopener">npcap.com</a>. Durante a instalação do Npcap,
+                                    marque <strong>"Install Npcap in WinPcap API-compatible Mode"</strong>.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="step-number" aria-hidden="true">2</span>
+                            <div class="step-content">
+                                <h4>Baixe o executável ou clone o repositório</h4>
+                                <p>Use o botão de download acima para obter o instalador, ou clone o repositório com:
+                                </p>
+                                <code>git clone https://github.com/Yurigonpav/netlab-educacional.git</code>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="step-number" aria-hidden="true">3</span>
+                            <div class="step-content">
+                                <h4>Crie o ambiente virtual e instale as dependências</h4>
+                                <p>No PowerShell, dentro da pasta do projeto:</p>
+                                <code>python -m venv venv</code><br>
+                                <code>.\venv\Scripts\Activate.ps1</code><br>
+                                <code>pip install -r requirements.txt</code>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="step-number" aria-hidden="true">4</span>
+                            <div class="step-content">
+                                <h4>Execute como administrador</h4>
+                                <p>Abra o PowerShell como administrador e rode:</p>
+                                <code>.\venv\Scripts\python.exe main.py</code>
+                                <p style="margin-top:6px;">Selecione a interface de rede correta e clique em
+                                    <strong>Iniciar Captura</strong>.</p>
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- ── DOWNLOAD ───────────────────────── -->
+            <section class="section animate-in delay-3" id="download" aria-labelledby="sec-dl">
+                <div class="card"
+                    style="padding:32px;text-align:center;border:1px solid rgba(94,198,255,0.25);background:linear-gradient(180deg,rgba(16,34,53,0.96),rgba(8,18,29,0.96));">
+                    <span class="hero-eyebrow" style="justify-content:center;">Download direto</span>
+                    <h2 id="sec-dl" style="font-size:28px;margin-bottom:8px;">Baixe o instalador</h2>
+                    <p style="color:var(--muted);max-width:50ch;margin:0 auto 22px;">
+                        Clique no botão abaixo para iniciar o download imediatamente.
+                        O arquivo é servido diretamente pelo <strong>GitHub Releases</strong>,
+                        sem telas intermediárias ou anúncios.
+                    </p>
+                    <a href="https://github.com/Yurigonpav/netlab-educacional/releases/latest/download/NetLabSetup.exe"
+                        class="btn-primary" style="font-size:17px;padding:14px 32px;" id="btn-download-principal">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="7 10 12 15 17 10" />
+                            <line x1="12" y1="15" x2="12" y2="3" />
+                        </svg>
+                        NetLabSetup.exe
+                    </a>
+                    <p style="color:var(--muted);font-size:12px;margin-top:14px;">
+                        ⚡ Download automático ao clicar • Sem contador • Sem propaganda<br>
+                        <span style="opacity:0.7;">Se o download não iniciar,
+                            <a href="https://github.com/Yurigonpav/netlab-educacional/releases/latest" target="_blank"
+                                rel="noopener">clique aqui</a>
+                            para ver todas as versões.</span>
+                    </p>
+                    <div style="margin-top:18px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center;">
+                        <span
+                            style="display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:999px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);font-size:12px;color:var(--muted);">📦
+                            ~40 MB</span>
+                        <span
+                            style="display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:999px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);font-size:12px;color:var(--muted);">🔒
+                            HTTPS</span>
+                        <span
+                            style="display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:999px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);font-size:12px;color:var(--muted);">✅
+                            Windows 10/11</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── AVISO ÉTICO ────────────────────── -->
+            <section class="section animate-in delay-3" aria-labelledby="sec-aviso">
+                <div class="aviso-box" role="alert">
+                    <span class="aviso-icon" aria-hidden="true">⚠️</span>
+                    <div>
+                        <h3 id="sec-aviso" style="color:var(--danger);margin-bottom:6px;font-size:15px;">Aviso ético
+                            importante</h3>
+                        <p>
+                            O NetLab Educacional foi desenvolvido <strong>exclusivamente para ensino, demonstração e
+                                pesquisa em ambientes autorizados</strong>. O servidor vulnerável implementa falhas
+                            reais por finalidade didática e <strong>jamais deve ser exposto à Internet</strong>.
+                            Não utilize as técnicas demonstradas contra sistemas reais sem permissão explícita.
+                            Capture tráfego apenas de redes próprias ou com consentimento dos participantes.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- ═══════════ FOOTER ═══════════ -->
+        <footer class="site-footer" role="contentinfo">
+            <div class="footer-links">
+                <a href="https://github.com/Yurigonpav/netlab-educacional" target="_blank"
+                    rel="noopener noreferrer">GitHub</a>
+                <a href="https://github.com/Yurigonpav/netlab-educacional/releases/latest" target="_blank"
+                    rel="noopener noreferrer">Releases</a>
+                <a href="https://instagram.com/yuri_g0n" target="_blank" rel="noopener noreferrer">Instagram</a>
+                <a href="https://iffarroupilha.edu.br/uruguaiana" target="_blank" rel="noopener noreferrer">IFFar —
+                    Uruguaiana</a>
+            </div>
+            <p>
+                Desenvolvido por <strong>Yuri Gonçalves Pavão</strong> —
+                Trabalho de Conclusão de Curso Técnico em Informática<br>
+                Instituto Federal Farroupilha, Campus Uruguaiana • © 2025
+            </p>
+            <p style="margin-top:8px;font-size:11px;opacity:0.7;">
+                Este projeto é distribuído com finalidade educacional. Use apenas em ambientes autorizados.
+            </p>
+        </footer>
+    </div>
+
+    <!-- Botão flutuante (mobile) -->
+    <a href="#download" class="floating-download" aria-label="Ir para seção de download">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+        </svg>
+        Baixar
+    </a>
+
+    <!-- Script para rolagem suave e pequenas melhorias -->
+    <script>
+        // Rolagem suave para links internos (fallback para navegadores sem suporte completo)
+        document.querySelectorAll('a[href^="#"]').forEach(function (link) {
+            link.addEventListener('click', function (e) {
+                var targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                var target = document.querySelector(targetId);
+                if (target) {
+                    e.preventDefault();
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    // Atualiza a URL sem recarregar
+                    if (history.pushState) {
+                        history.pushState(null, null, targetId);
+                    }
+                    // Move o foco para o destino (acessibilidade)
+                    target.setAttribute('tabindex', '-1');
+                    target.focus({ preventScroll: true });
+                }
+            });
+        });
+
+        // Exibe o botão flutuante apenas em mobile quando a seção de download não está visível
+        var floatingBtn = document.querySelector('.floating-download');
+        var downloadSection = document.getElementById('download');
+
+        function updateFloatingButton() {
+            if (window.innerWidth > 640) {
+                floatingBtn.style.display = 'none';
+                return;
+            }
+            var rect = downloadSection.getBoundingClientRect();
+            // Mostra o botão se a seção de download não está visível na tela
+            if (rect.top > window.innerHeight || rect.bottom < 0) {
+                floatingBtn.style.display = 'flex';
+            } else {
+                floatingBtn.style.display = 'none';
+            }
+        }
+
+        window.addEventListener('scroll', updateFloatingButton, { passive: true });
+        window.addEventListener('resize', updateFloatingButton, { passive: true });
+        updateFloatingButton();
+
+        // Registrar clique no botão de download (para analytics futuro, se desejar)
+        document.getElementById('btn-download-principal').addEventListener('click', function () {
+            console.log('Download iniciado: NetLabSetup.exe');
+            // Se quiser integrar Google Analytics ou similar no futuro:
+            // gtag('event', 'download', { 'event_category': 'engagement', 'event_label': 'NetLabSetup.exe' });
+        });
+
+        console.log('%c🛡️ NetLab Educacional %c— Site de download pronto.',
+            'color:#5ec6ff;font-size:16px;font-weight:bold;', 'color:#9cb5d1;');
+        console.log('%cUse apenas em ambientes autorizados.',
+            'color:#ff8d8d;font-size:12px;');
+    </script>
+</body>
+
+</html>
