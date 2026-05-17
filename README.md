@@ -9,7 +9,7 @@ O site foi desenvolvido para apresentar as funcionalidades do software NetLab, f
 ### Funcionalidades do Site:
 - **Design Moderno**: Interface escura com estética técnica e premium.
 - **Responsivo**: Totalmente adaptado para dispositivos móveis e desktops.
-- **Instruções Claras**: Passo a passo de instalação do software e seus pré-requisitos (como o Npcap).
+- **Instruções Claras**: Passo a passo de instalação do software e seus pré-requisitos.
 - **Acessibilidade**: Implementação de links de salto (skip links) e semântica HTML5.
 
 ## Tecnologias Utilizadas
@@ -17,14 +17,6 @@ O site foi desenvolvido para apresentar as funcionalidades do software NetLab, f
 - **HTML5**: Estrutura semântica.
 - **CSS3 (Vanilla)**: Estilização personalizada, variáveis CSS e animações.
 - **JavaScript**: Lógica simples para rolagem suave e interações básicas.
-
-## Como Visualizar Localmente
-
-1. Clone este repositório:
-   ```bash
-   git clone https://github.com/Yurigonpav/NetLab-Site.git
-   ```
-2. Abra o arquivo `index.html` em qualquer navegador moderno.
 
 ## Links Relacionados
 
