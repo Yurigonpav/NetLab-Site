@@ -298,6 +298,37 @@
             box-shadow: 0 6px 18px rgba(62, 183, 255, 0.20);
         }
 
+        .btn-linux {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 50px;
+            padding: 12px 24px;
+            border-radius: var(--radius-pill);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.22s ease;
+            color: #07111c;
+            background: linear-gradient(135deg, #38ef7d 0%, #11998e 100%);
+            box-shadow: 0 10px 28px rgba(17, 153, 142, 0.28);
+            white-space: nowrap;
+        }
+
+        .btn-linux:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 36px rgba(17, 153, 142, 0.38);
+            text-decoration: none;
+            color: #07111c;
+        }
+
+        .btn-linux:active {
+            transform: translateY(0);
+            box-shadow: 0 6px 18px rgba(17, 153, 142, 0.20);
+        }
+
         .btn-ghost {
             display: inline-flex;
             align-items: center;
@@ -395,6 +426,18 @@
             font-size: 13px;
             font-weight: 600;
             margin-left: 8px;
+        }
+
+        .os-badge.os-badge-win {
+            border-color: rgba(94, 198, 255, 0.28);
+            background: rgba(94, 198, 255, 0.08);
+            color: var(--accent);
+        }
+
+        .os-badge.os-badge-linux {
+            border-color: rgba(56, 239, 125, 0.32);
+            background: rgba(56, 239, 125, 0.08);
+            color: #38ef7d;
         }
 
         /* ── Seções ────────────────────────────── */
@@ -534,6 +577,67 @@
         }
 
         /* ── Instalação ────────────────────────── */
+        .install-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .install-tab-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 22px;
+            border-radius: var(--radius-pill);
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--muted);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .install-tab-btn:hover {
+            background: rgba(255, 255, 255, 0.07);
+            color: var(--text);
+            border-color: var(--line-strong);
+        }
+
+        .install-tab-btn.active {
+            background: rgba(94, 198, 255, 0.12);
+            border-color: rgba(94, 198, 255, 0.4);
+            color: var(--accent);
+        }
+
+        .install-tab-btn.tab-linux.active {
+            background: rgba(56, 239, 125, 0.12);
+            border-color: rgba(56, 239, 125, 0.4);
+            color: #38ef7d;
+        }
+
+        .install-tab-btn .tab-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            opacity: 0.6;
+        }
+
+        .install-tab-btn.active .tab-dot {
+            opacity: 1;
+        }
+
+        .install-panel {
+            display: none;
+        }
+
+        .install-panel.active {
+            display: block;
+            animation: fadeIn 0.25s ease forwards;
+        }
+
         .steps-list {
             list-style: none;
             display: flex;
@@ -1313,6 +1417,7 @@
             }
 
             .btn-primary,
+            .btn-linux,
             .btn-ghost {
                 width: 100%;
                 justify-content: center;
@@ -1413,8 +1518,8 @@
                 <a href="#requisitos" class="nav-link">Requisitos</a>
                 <a href="#instalacao" class="nav-link">Instalação</a>
                 <a href="#faq" class="nav-link">FAQ</a>
-                <a href="download/NetLab_Educacional_v5.0.0.exe"
-                    class="nav-link nav-cta">Baixar o instalador</a>
+                <a href="#instalacao"
+                    class="nav-link nav-cta">Baixar NetLab</a>
             </nav>
         </header>
 
@@ -1437,14 +1542,25 @@
                     </p>
                     <div class="hero-actions">
                         <a href="download/NetLab_Educacional_v5.0.0.exe"
-                            class="btn-primary" id="btn-download-principal">
+                            class="btn-primary" id="btn-download-principal" download>
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                <polyline points="7 10 12 15 17 10" />
-                                <line x1="12" y1="15" x2="12" y2="3" />
+                                <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+                                <line x1="8" y1="21" x2="16" y2="21" />
+                                <line x1="12" y1="17" x2="12" y2="21" />
                             </svg>
-                            Baixar o instalador
+                            Baixar Windows (.exe)
+                        </a>
+                        <a href="download/netlab-educacional_5.0.0_all.deb"
+                            class="btn-linux" id="btn-download-linux" download>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M12 2a5 5 0 0 0-5 5v3a5 5 0 0 0 10 0V7a5 5 0 0 0-5-5z" />
+                                <path d="M19 13v1a7 7 0 0 1-14 0v-1" />
+                                <line x1="12" y1="21" x2="12" y2="23" />
+                                <line x1="8" y1="23" x2="16" y2="23" />
+                            </svg>
+                            Baixar Linux (.deb)
                         </a>
                         <a href="https://github.com/Yurigonpav/NetLab-Educacional" class="btn-ghost" target="_blank"
                             rel="noopener noreferrer">
@@ -1452,7 +1568,7 @@
                                 <path
                                     d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.605-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z" />
                             </svg>
-                            Ver no GitHub
+                            GitHub
                         </a>
                         <a href="#artigo" class="btn-ghost">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -1483,8 +1599,8 @@
                             <span>vulnerabilidades web</span>
                         </div>
                         <div class="stat">
-                            <strong>~70 MB</strong>
-                            <span>tamanho do instalador</span>
+                            <strong>2</strong>
+                            <span>sistemas (Win/Linux)</span>
                         </div>
                     </div>
                     <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
@@ -1497,7 +1613,7 @@
                             </svg>
                             v5.0
                         </span>
-                        <span class="os-badge">
+                        <span class="os-badge os-badge-win">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
@@ -1506,11 +1622,19 @@
                             </svg>
                             Windows 10/11
                         </span>
+                        <span class="os-badge os-badge-linux">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M12 2a5 5 0 0 0-5 5v3a5 5 0 0 0 10 0V7a5 5 0 0 0-5-5z" />
+                                <path d="M19 13v1a7 7 0 0 1-14 0v-1" />
+                            </svg>
+                            Linux (Ubuntu/Debian/Kali)
+                        </span>
                     </div>
                     <p style="color:var(--muted);font-size:12px;margin-top:14px;line-height:1.5;">
                         Desenvolvido como Trabalho de Conclusão de Curso Técnico em Informática
                         no <strong style="color:var(--text);">IFFar — Campus Uruguaiana</strong>.
-                        Atualizado em Maio de 2026.
+                        Multiplataforma Windows & Linux.
                     </p>
                 </aside>
             </section>
@@ -1853,9 +1977,8 @@
                             </svg>
                         </div>
                         <div>
-                            <h4>Windows 10 ou 11</h4>
-                            <p>Sistema operacional principal. O fluxo foi projetado e testado em Windows. Alguns
-                                componentes também funcionam em Linux.</p>
+                            <h4>Windows 10/11 ou Linux</h4>
+                            <p>Suporte completo no Windows e distribuições Linux (Ubuntu 22.04+, Debian 12+, Kali Linux, Linux Mint, Fedora e Arch).</p>
                         </div>
                     </div>
                     <div class="req-card">
@@ -1867,9 +1990,8 @@
                             </svg>
                         </div>
                         <div>
-                            <h4>Python 3.11+</h4>
-                            <p>Recomendado usar a versão mais recente do Python 3. O instalador empacota as dependências
-                                necessárias.</p>
+                            <h4>Python 3.10+</h4>
+                            <p>O instalador Windows empacota o runtime completo. No Linux, o pacote <code>.deb</code> gerencia todas as dependências nativas via apt.</p>
                         </div>
                     </div>
                     <div class="req-card">
@@ -1882,9 +2004,8 @@
                             </svg>
                         </div>
                         <div>
-                            <h4>Npcap</h4>
-                            <p>Driver de captura de pacotes para Windows. Instale com o modo <em>"WinPcap API-compatible
-                                    Mode"</em> ativado.</p>
+                            <h4>Npcap ou libpcap</h4>
+                            <p>No Windows, instale o Npcap (modo WinPcap API-compatible). No Linux, a biblioteca nativa <code>libpcap</code> é instalada automaticamente.</p>
                         </div>
                     </div>
                     <div class="req-card">
@@ -1895,9 +2016,8 @@
                             </svg>
                         </div>
                         <div>
-                            <h4>Privilégios de administrador</h4>
-                            <p>A captura de pacotes requer execução como administrador. O NetLab detecta e avisa se a
-                                permissão estiver ausente.</p>
+                            <h4>Privilégios de Rede</h4>
+                            <p>Execução como administrador no Windows ou <em>Linux Capabilities</em> (configuradas no <code>.deb</code> para dispensar o uso de sudo).</p>
                         </div>
                     </div>
                 </div>
@@ -1907,44 +2027,94 @@
             <section class="section animate-in delay-2" id="instalacao" aria-labelledby="sec-inst">
                 <div class="section-header">
                     <span class="eyebrow">Como instalar</span>
-                    <h2 id="sec-inst">Passo a passo rápido</h2>
-                    <p>Da instalação do Python até a primeira captura.</p>
+                    <h2 id="sec-inst">Passo a passo por sistema</h2>
+                    <p>Escolha o seu sistema operacional e comece em minutos.</p>
                 </div>
+
+                <div class="install-tabs" role="tablist" aria-label="Abas de instalação por sistema operacional">
+                    <button type="button" class="install-tab-btn active" data-install-tab="windows" role="tab" aria-selected="true" aria-controls="install-panel-windows" id="tab-btn-win">
+                        <span class="tab-dot" aria-hidden="true"></span>
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                            <line x1="8" y1="21" x2="16" y2="21"></line>
+                            <line x1="12" y1="17" x2="12" y2="21"></line>
+                        </svg>
+                        Windows (.exe)
+                    </button>
+                    <button type="button" class="install-tab-btn tab-linux" data-install-tab="linux" role="tab" aria-selected="false" aria-controls="install-panel-linux" id="tab-btn-lin">
+                        <span class="tab-dot" aria-hidden="true"></span>
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M12 2a5 5 0 0 0-5 5v3a5 5 0 0 0 10 0V7a5 5 0 0 0-5-5z" />
+                            <path d="M19 13v1a7 7 0 0 1-14 0v-1" />
+                        </svg>
+                        Linux (.deb)
+                    </button>
+                </div>
+
                 <div class="card" style="padding:28px;">
-                    <ol class="steps-list">
-                        <li>
-                            <span class="step-number" aria-hidden="true">1</span>
-                            <div class="step-content">
-                                <h4>Instale o Npcap</h4>
-                                <p>Baixe e instale o Npcap em <a href="https://npcap.com" target="_blank"
-                                        rel="noopener">npcap.com</a>. Durante a instalação, é obrigatório marcar a
-                                    opção:
-                                    <strong>"Install Npcap in WinPcap API-compatible Mode"</strong>.
-                                </p>
-                            </div>
-                        </li>
-                        <li>
-                            <span class="step-number" aria-hidden="true">2</span>
-                            <div class="step-content">
-                                <h4>Execute o Instalador</h4>
-                                <p>Clique no botão <strong>Baixar o instalador</strong> no topo da página para obter o
-                                    <code>NetLab_Educacional_v5.0.0.exe</code>.
-                                    Abra o arquivo e siga as instruções na tela para concluir a instalação no seu
-                                    computador.
-                                </p>
-                            </div>
-                        </li>
-                        <li>
-                            <span class="step-number" aria-hidden="true">3</span>
-                            <div class="step-content">
-                                <h4>Inicie como Administrador</h4>
-                                <p>Após a instalação, localize o atalho do <strong>NetLab Educacional</strong> na sua
-                                    área de trabalho ou menu iniciar.
-                                    Clique com o botão direito e selecione <strong>"Executar como
-                                        administrador"</strong> para permitir a captura de pacotes.</p>
-                            </div>
-                        </li>
-                    </ol>
+                    <!-- Painel Windows -->
+                    <div class="install-panel active" id="install-panel-windows" role="tabpanel" aria-labelledby="tab-btn-win">
+                        <ol class="steps-list">
+                            <li>
+                                <span class="step-number" aria-hidden="true">1</span>
+                                <div class="step-content">
+                                    <h4>Instale o Npcap</h4>
+                                    <p>Baixe e instale o Npcap em <a href="https://npcap.com" target="_blank"
+                                            rel="noopener">npcap.com</a>. Durante a instalação, marque obrigatoriamente a opção:
+                                        <strong>"Install Npcap in WinPcap API-compatible Mode"</strong>.
+                                    </p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="step-number" aria-hidden="true">2</span>
+                                <div class="step-content">
+                                    <h4>Execute o Instalador Oficial</h4>
+                                    <p>Baixe o <a href="download/NetLab_Educacional_v5.0.0.exe" download style="color:var(--accent);font-weight:600;">NetLab_Educacional_v5.0.0.exe</a>.
+                                        Abra o arquivo executável e siga as instruções na tela para concluir a instalação.
+                                    </p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="step-number" aria-hidden="true">3</span>
+                                <div class="step-content">
+                                    <h4>Inicie como Administrador</h4>
+                                    <p>Após a instalação, localize o atalho do <strong>NetLab Educacional</strong> na sua
+                                        Área de Trabalho ou menu Iniciar.
+                                        Clique com o botão direito e selecione <strong>"Executar como
+                                            administrador"</strong> para permitir a captura de pacotes.</p>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <!-- Painel Linux -->
+                    <div class="install-panel" id="install-panel-linux" role="tabpanel" aria-labelledby="tab-btn-lin">
+                        <ol class="steps-list">
+                            <li>
+                                <span class="step-number" aria-hidden="true">1</span>
+                                <div class="step-content">
+                                    <h4>Baixe o Pacote .deb</h4>
+                                    <p>Baixe o instalador <a href="download/netlab-educacional_5.0.0_all.deb" download style="color:#38ef7d;font-weight:600;">netlab-educacional_5.0.0_all.deb</a> (~750 KB), compatível com Ubuntu 22.04+, Debian 12+, Kali Linux e Linux Mint.
+                                    </p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="step-number" aria-hidden="true">2</span>
+                                <div class="step-content">
+                                    <h4>Instale com Dois Cliques ou via Terminal</h4>
+                                    <p>Dê <strong>duplo clique</strong> no arquivo <code>.deb</code> para abrir na Central de Aplicativos do sistema, ou execute pelo terminal:</p>
+                                    <pre style="background:rgba(0,0,0,0.35);padding:10px 14px;border-radius:8px;margin-top:8px;font-size:13px;color:#38ef7d;border:1px solid rgba(56,239,125,0.25);overflow-x:auto;">sudo apt install ./netlab-educacional_5.0.0_all.deb</pre>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="step-number" aria-hidden="true">3</span>
+                                <div class="step-content">
+                                    <h4>Execute sem Necessidade de Sudo</h4>
+                                    <p>O pacote configura automaticamente as permissões de segurança de rede (<em>Linux Capabilities</em>). Abra pelo menu de aplicativos procurando por <strong>"NetLab Educacional"</strong> ou digite <code>netlab-educacional</code> no terminal.</p>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
                 </div>
             </section>
 
@@ -2026,6 +2196,21 @@
                                 de administrador no Windows para acessar as interfaces de rede. Sem essa permissão, o
                                 NetLab não consegue abrir o socket de captura. O sistema detecta automaticamente se a
                                 permissão está ausente e exibe um aviso na tela de diagnóstico.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="faq-item" role="listitem">
+                        <button class="faq-question" aria-expanded="false">
+                            O NetLab funciona no Linux (Ubuntu, Debian, Kali)?
+                            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                        <div class="faq-answer">
+                            <div class="faq-answer-inner">
+                                Sim! O NetLab Educacional conta com suporte nativo para distribuições Linux através do pacote oficial <code>.deb</code> (Debian, Ubuntu, Kali Linux, Linux Mint) e execução direta via script. A instalação via pacote .deb configura automaticamente as permissões de segurança de rede (<em>Linux Capabilities</em>: <code>cap_net_raw</code> e <code>cap_net_admin</code>), dispensando o uso de <code>sudo</code> contínuo para capturar pacotes.
                             </div>
                         </div>
                     </div>
@@ -2264,8 +2449,8 @@
             <div class="footer-links">
                 <a href="https://github.com/Yurigonpav/NetLab-Educacional" target="_blank"
                     rel="noopener noreferrer">GitHub</a>
-                <a href="download/NetLab_Educacional_v5.0.0.exe"
-                    target="_blank" rel="noopener noreferrer">Releases</a>
+                <a href="download/NetLab_Educacional_v5.0.0.exe" download>Windows (.exe)</a>
+                <a href="download/netlab-educacional_5.0.0_all.deb" download>Linux (.deb)</a>
                 <a href="#artigo">Artigo</a>
                 <a href="https://instagram.com/yuri_g0n" target="_blank" rel="noopener noreferrer">Instagram</a>
                 <a href="https://iffarroupilha.edu.br/uruguaiana" target="_blank" rel="noopener noreferrer">IFFar —
@@ -2316,13 +2501,45 @@
             });
         });
 
-        /* ── Botão de download ──────────────────── */
+        /* ── Botões de download ──────────────────── */
         var btnDownload = document.getElementById('btn-download-principal');
         if (btnDownload) {
             btnDownload.addEventListener('click', function () {
                 console.log('Download iniciado: NetLab_Educacional_v5.0.0.exe');
             });
         }
+
+        var btnDownloadLinux = document.getElementById('btn-download-linux');
+        if (btnDownloadLinux) {
+            btnDownloadLinux.addEventListener('click', function () {
+                console.log('Download iniciado: netlab-educacional_5.0.0_all.deb');
+            });
+        }
+
+        /* ── Abas de instalação (Windows / Linux) ─── */
+        var installTabBtns = document.querySelectorAll('.install-tab-btn');
+        var installPanels = document.querySelectorAll('.install-panel');
+
+        installTabBtns.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var target = this.getAttribute('data-install-tab');
+
+                installTabBtns.forEach(function (b) {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-selected', 'false');
+                });
+                this.classList.add('active');
+                this.setAttribute('aria-selected', 'true');
+
+                installPanels.forEach(function (panel) {
+                    if (panel.id === 'install-panel-' + target) {
+                        panel.classList.add('active');
+                    } else {
+                        panel.classList.remove('active');
+                    }
+                });
+            });
+        });
 
         /* ── Abas da galeria ────────────────────── */
         var tabBtns = document.querySelectorAll('.media-tab-btn');
